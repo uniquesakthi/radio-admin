@@ -47,15 +47,6 @@ git push -u origin main
 
 In Vercel dashboard → **Environment Variables**, add these 7 variables:
 
-```
-VITE_FIREBASE_API_KEY = AIzaSyAyIh6dmQbKl-czFJjlA63pw7cRMvHnMtc
-VITE_FIREBASE_AUTH_DOMAIN = radios-50ea5.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID = radios-50ea5
-VITE_FIREBASE_STORAGE_BUCKET = radios-50ea5.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID = 276232644106
-VITE_FIREBASE_APP_ID = 1:276232644106:web:d62b299a5e954dab4261f3
-VITE_FIREBASE_MEASUREMENT_ID = G-7C1HT7QNF7
-```
 
 **Important:** Set scope to **Production** and **Preview**
 
@@ -102,27 +93,7 @@ Follow the prompts:
 ### Step 4: Add Environment Variables
 
 ```powershell
-vercel env add VITE_FIREBASE_API_KEY
-# Enter value: AIzaSyAyIh6dmQbKl-czFJjlA63pw7cRMvHnMtc
 
-vercel env add VITE_FIREBASE_AUTH_DOMAIN
-# Enter value: radios-50ea5.firebaseapp.com
-
-vercel env add VITE_FIREBASE_PROJECT_ID
-# Enter value: radios-50ea5
-
-vercel env add VITE_FIREBASE_STORAGE_BUCKET
-# Enter value: radios-50ea5.appspot.com
-
-vercel env add VITE_FIREBASE_MESSAGING_SENDER_ID
-# Enter value: 276232644106
-
-vercel env add VITE_FIREBASE_APP_ID
-# Enter value: 1:276232644106:web:d62b299a5e954dab4261f3
-
-vercel env add VITE_FIREBASE_MEASUREMENT_ID
-# Enter value: G-7C1HT7QNF7
-```
 
 ### Step 5: Deploy to Production
 
