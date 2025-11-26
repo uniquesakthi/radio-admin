@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Connection Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0f0f1e;
+            color: white;
+        }
+
+        .test-box {
+            background: #1e1e3f;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+
+        .success {
+            background: rgba(67, 233, 123, 0.2);
+            color: #43e97b;
+        }
+
+        .error {
+            background: rgba(245, 87, 108, 0.2);
+            color: #f5576c;
+        }
+
+        .warning {
+            background: rgba(255, 167, 38, 0.2);
+            color: #ffa726;
+        }
+
+        .info {
+            background: rgba(79, 172, 254, 0.2);
+            color: #4facfe;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            background: #252541;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+        }
+
+        pre {
+            background: #0a0a15;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+
+        h1 {
+            color: #667eea;
+        }
+
+        h2 {
+            color: #4facfe;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔥 Firebase Connection Test</h1>
+
+    <div class="test-box">
+        <h2>1. Firebase SDK Status</h2>
+        <div id="sdkStatus">Testing...</div>
+    </div>
+
+    <div class="test-box">
+        <h2>2. Firebase Configuration</h2>
+        <div id="configStatus">Checking...</div>
+        <pre id="configDisplay"></pre>
+    </div>
+
+    <div class="test-box">
+        <h2>3. Authentication Test</h2>
+        <div id="authStatus">Ready to test</div>
+
+        <div style="margin-top: 20px;">
+            <input type="email" id="testEmail" placeholder="Email (e.g., admin@radios.com)">
+            <input type="password" id="testPassword" placeholder="Password">
+            <button onclick="testLogin()">Test Login</button>
+        </div>
+
+        <div id="loginResult"></div>
+    </div>
+
+    <div class="test-box">
+        <h2>4. Firestore Connection</h2>
+        <div id="firestoreStatus">Testing...</div>
+        <button onclick="testFirestore()">Test Firestore Read</button>
+        <div id="firestoreResult"></div>
+    </div>
+
+    <div class="test-box">
+        <h2>📋 Quick Setup Checklist</h2>
+        <div class="info">
+            <strong>Before you can login, make sure:</strong><br><br>
+            ✅ Email/Password authentication is enabled in Firebase Console<br>
+            ✅ You've created at least one user in Firebase Authentication<br>
+            ✅ Firestore security rules are set (for data access)<br><br>
+
+            <strong>Quick Links:</strong><br>
+            • <a href="https://console.firebase.google.com/project/radios-50ea5/authentication/providers"
+                target="_blank" style="color: #4facfe;">Enable Authentication</a><br>
+            • <a href="https://console.firebase.google.com/project/radios-50ea5/authentication/users" target="_blank"
+                style="color: #4facfe;">Add User</a><br>
+            • <a href="https://console.firebase.google.com/project/radios-50ea5/firestore/rules" target="_blank"
+                style="color: #4facfe;">Set Firestore Rules</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAyIh6dmQbKl-czFJjlA63pw7cRMvHnMtc",
+            authDomain: "radios-50ea5.firebaseapp.com",
+            projectId: "radios-50ea5",
+            storageBucket: "radios-50ea5.appspot.com",
+            messagingSenderId: "276232644106",
+            appId: "1:276232644106:web:d62b299a5e954dab4261f3",
+            measurementId: "G-7C1HT7QNF7"
+        };
+
+        let app, auth, db;
+
+        // Test 1: SDK Status
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            document.getElementById('sdkStatus').innerHTML = '<div class="status success">✅ Firebase SDK loaded successfully!</div>';
+        } catch (error) {
+            document.getElementById('sdkStatus').innerHTML = `<div class="status error">❌ Error: ${error.message}</div>`;
+        }
+
+        // Test 2: Configuration
+        document.getElementById('configDisplay').textContent = JSON.stringify(firebaseConfig, null, 2);
+        document.getElementById('configStatus').innerHTML = '<div class="status success">✅ Configuration loaded</div>';
+
+        // Test 3: Login
+        window.testLogin = async function () {
+            const email = document.getElementById('testEmail').value;
+            const password = document.getElementById('testPassword').value;
+            const resultDiv = document.getElementById('loginResult');
+
+            if (!email || !password) {
+                resultDiv.innerHTML = '<div class="status warning">⚠️ Please enter email and password</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<div class="status info">🔄 Testing login...</div>';
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                resultDiv.innerHTML = `
+                    <div class="status success">
+                        ✅ Login successful!<br>
+                        User: ${userCredential.user.email}<br>
+                        UID: ${userCredential.user.uid}
+                    </div>
+                `;
+                document.getElementById('authStatus').innerHTML = '<div class="status success">✅ Authentication is working!</div>';
+            } catch (error) {
+                let errorMsg = error.message;
+                let helpText = '';
+
+                if (error.code === 'auth/user-not-found') {
+                    helpText = '<br><br><strong>Fix:</strong> Create a user in Firebase Console → Authentication → Users';
+                } else if (error.code === 'auth/wrong-password') {
+                    helpText = '<br><br><strong>Fix:</strong> Check your password or reset it in Firebase Console';
+                } else if (error.code === 'auth/invalid-credential') {
+                    helpText = '<br><br><strong>Fix:</strong> Invalid email or password. Make sure the user exists in Firebase.';
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    helpText = '<br><br><strong>Fix:</strong> Enable Email/Password authentication in Firebase Console → Authentication → Sign-in method';
+                }
+
+                resultDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ Login failed<br>
+                        Error Code: ${error.code}<br>
+                        Message: ${errorMsg}${helpText}
+                    </div>
+                `;
+                document.getElementById('authStatus').innerHTML = '<div class="status error">❌ Authentication test failed</div>';
+            }
+        };
+
+        // Test 4: Firestore
+        window.testFirestore = async function () {
+            const resultDiv = document.getElementById('firestoreResult');
+            resultDiv.innerHTML = '<div class="status info">🔄 Testing Firestore connection...</div>';
+
+            try {
+                const querySnapshot = await getDocs(collection(db, 'channels'));
+                const count = querySnapshot.size;
+
+                resultDiv.innerHTML = `
+                    <div class="status success">
+                        ✅ Firestore connected!<br>
+                        Found ${count} channel(s) in database
+                    </div>
+                `;
+                document.getElementById('firestoreStatus').innerHTML = '<div class="status success">✅ Firestore is accessible</div>';
+            } catch (error) {
+                let helpText = '';
+                if (error.code === 'permission-denied') {
+                    helpText = '<br><br><strong>Fix:</strong> Set Firestore security rules to allow authenticated users';
+                }
+
+                resultDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ Firestore error<br>
+                        Error Code: ${error.code}<br>
+                        Message: ${error.message}${helpText}
+                    </div>
+                `;
+                document.getElementById('firestoreStatus').innerHTML = '<div class="status error">❌ Firestore test failed</div>';
+            }
+        };
+
+        // Auto-test Firestore on load
+        setTimeout(() => {
+            testFirestore();
+        }, 1000);
+    </script>
+</body>
+
+</html>

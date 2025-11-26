@@ -1,0 +1,234 @@
+/* Modern button styles for channel genre, audio player, and action buttons */
+
+.channel-genre {
+    color: var(--text-tertiary);
+    font-size: 0.875rem;
+    margin-bottom: var(--spacing-md);
+}
+
+/* ========================================
+   Audio Player
+   ======================================== */
+.audio-player {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    transition: all var(--transition-base);
+}
+
+.audio-player.playing {
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);
+    border-color: rgba(79, 172, 254, 0.3);
+    box-shadow: 0 0 20px rgba(79, 172, 254, 0.2);
+}
+
+.audio-player.loading {
+    background: linear-gradient(135deg, rgba(255, 167, 38, 0.1) 0%, rgba(251, 192, 45, 0.1) 100%);
+    border-color: rgba(255, 167, 38, 0.3);
+}
+
+.audio-player.error {
+    background: linear-gradient(135deg, rgba(245, 87, 108, 0.1) 0%, rgba(254, 225, 64, 0.1) 100%);
+    border-color: rgba(245, 87, 108, 0.3);
+}
+
+.btn-play {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: 1rem 1.5rem;
+    background: var(--accent-gradient);
+    border: none;
+    border-radius: var(--radius-md);
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+    margin-bottom: var(--spacing-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-play::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-play:hover::before {
+    left: 100%;
+}
+
+.btn-play:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
+}
+
+.btn-play:active {
+    transform: translateY(-1px);
+}
+
+.audio-player.playing .btn-play {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    box-shadow: 0 4px 12px rgba(67, 233, 123, 0.4);
+}
+
+.audio-player.playing .btn-play:hover {
+    box-shadow: 0 6px 20px rgba(67, 233, 123, 0.6);
+}
+
+.audio-player.loading .btn-play {
+    background: linear-gradient(135deg, #ffa726 0%, #fbc02d 100%);
+    box-shadow: 0 4px 12px rgba(255, 167, 38, 0.4);
+    cursor: wait;
+}
+
+.audio-player.error .btn-play {
+    background: linear-gradient(135deg, #f5576c 0%, #fee140 100%);
+    box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+}
+
+.play-icon,
+.pause-icon,
+.loading-icon {
+    flex-shrink: 0;
+    transition: all var(--transition-base);
+}
+
+.loading-icon {
+    animation: spinLoader 1s linear infinite;
+}
+
+@keyframes spinLoader {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 24px;
+}
+
+.player-status {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    text-align: center;
+    transition: all var(--transition-base);
+    font-weight: 500;
+}
+
+.audio-player.playing .player-status {
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+.audio-player.loading .player-status {
+    color: var(--warning-color);
+    font-weight: 600;
+}
+
+.audio-player.error .player-status {
+    color: var(--danger-color);
+    font-weight: 700;
+}
+
+/* ========================================
+   Modern Action Buttons
+   ======================================== */
+.channel-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-icon {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    font-size: 0.875rem;
+    font-weight: 700;
+    font-family: var(--font-family);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.05) 100%);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.btn-icon:hover::before {
+    opacity: 1;
+}
+
+.btn-icon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-icon:active {
+    transform: translateY(0);
+}
+
+.btn-icon.edit {
+    border-color: rgba(79, 172, 254, 0.3);
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.05) 0%, rgba(0, 242, 254, 0.05) 100%);
+}
+
+.btn-icon.edit:hover {
+    border-color: var(--accent-color);
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.15) 0%, rgba(0, 242, 254, 0.15) 100%);
+    color: var(--accent-color);
+    box-shadow: 0 4px 16px rgba(79, 172, 254, 0.3);
+}
+
+.btn-icon.delete {
+    border-color: rgba(245, 87, 108, 0.3);
+    background: linear-gradient(135deg, rgba(245, 87, 108, 0.05) 0%, rgba(254, 225, 64, 0.05) 100%);
+}
+
+.btn-icon.delete:hover {
+    border-color: var(--danger-color);
+    background: linear-gradient(135deg, rgba(245, 87, 108, 0.15) 0%, rgba(254, 225, 64, 0.15) 100%);
+    color: var(--danger-color);
+    box-shadow: 0 4px 16px rgba(245, 87, 108, 0.3);
+}
+
+.btn-icon svg {
+    transition: transform var(--transition-base);
+}
+
+.btn-icon:hover svg {
+    transform: scale(1.1);
+}

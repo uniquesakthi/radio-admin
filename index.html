@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Admin Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Ultra-compact cards - NO CATEGORY, MINIMAL SPACING */
+        .channels-grid {
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+            gap: .875rem !important
+        }
+
+        .channel-card {
+            border-radius: 12px !important;
+            overflow: hidden !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .08) !important;
+            transition: all .25s ease !important;
+            border: 1px solid rgba(255, 255, 255, .05) !important
+        }
+
+        .channel-card:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .12) !important
+        }
+
+        .channel-image {
+            height: 120px !important;
+            object-fit: cover !important;
+            display: block !important
+        }
+
+        .channel-content {
+            padding: .5rem !important
+        }
+
+        .channel-title {
+            font-size: .85rem !important;
+            line-height: 1.2 !important;
+            margin: 0 0 .4rem 0 !important;
+            font-weight: 600 !important
+        }
+
+        .audio-player {
+            padding: .5rem !important;
+            margin-bottom: .5rem !important;
+            border-radius: 8px !important
+        }
+
+        .btn-play {
+            padding: .5rem .7rem !important;
+            font-size: .75rem !important;
+            font-weight: 600 !important;
+            border-radius: 6px !important;
+            gap: .3rem !important
+        }
+
+        .btn-play svg {
+            width: 14px !important;
+            height: 14px !important
+        }
+
+        .player-status {
+            font-size: .65rem !important;
+            margin-top: .25rem !important
+        }
+
+        .channel-actions {
+            display: flex !important;
+            gap: .5rem !important;
+            padding-top: .5rem !important;
+            border-top: 1px solid rgba(255, 255, 255, .05) !important
+        }
+
+        .btn-icon {
+            flex: 1 !important;
+            padding: .5rem .55rem !important;
+            font-size: .7rem !important;
+            font-weight: 600 !important;
+            border-radius: 6px !important;
+            border: none !important;
+            color: white !important;
+            transition: all .2s ease !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: .3rem !important
+        }
+
+        .btn-icon svg {
+            width: 12px !important;
+            height: 12px !important;
+            flex-shrink: 0 !important
+        }
+
+        .btn-icon.edit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, .3) !important
+        }
+
+        .btn-icon.edit:hover {
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, .5) !important
+        }
+
+        .btn-icon.delete {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+            box-shadow: 0 2px 8px rgba(245, 87, 108, .3) !important
+        }
+
+        .btn-icon.delete:hover {
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(245, 87, 108, .5) !important
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 1.5rem
+        }
+
+        .search-icon {
+            position: absolute;
+            left: .75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            pointer-events: none;
+            z-index: 1
+        }
+
+        .search-input {
+            width: 100%;
+            padding: .75rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: .9rem
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, .1)
+        }
+
+        .clear-search {
+            position: absolute;
+            right: .5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-tertiary);
+            padding: .5rem;
+            border-radius: 4px;
+            transition: all .2s
+        }
+
+        .clear-search:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary)
+        }
+
+        .error-badge {
+            display: inline-block;
+            padding: .2rem .4rem;
+            background: rgba(245, 87, 108, .15);
+            border: 1px solid rgba(245, 87, 108, .3);
+            border-radius: 8px;
+            font-size: .65rem;
+            color: #f5576c;
+            margin-left: .4rem;
+            font-weight: 600
+        }
+
+        .failed-counter {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .5rem .75rem;
+            background: linear-gradient(135deg, rgba(245, 87, 108, .15), rgba(254, 225, 64, .15));
+            border: 1px solid rgba(245, 87, 108, .4);
+            border-radius: 8px;
+            font-size: .85rem;
+            font-weight: 600;
+            color: #f5576c;
+            cursor: pointer;
+            transition: all .2s
+        }
+
+        .failed-counter:hover {
+            background: linear-gradient(135deg, rgba(245, 87, 108, .25), rgba(254, 225, 64, .25));
+            box-shadow: 0 2px 8px rgba(245, 87, 108, .3)
+        }
+
+        .failed-counter svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="logo-container">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
+                            fill="url(#g1)" />
+                        <path
+                            d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 8.69 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16Z"
+                            fill="url(#g2)" />
+                        <circle cx="12" cy="12" r="3" fill="url(#g3)" />
+                        <defs>
+                            <linearGradient id="g1" x1="2" y1="2" x2="22" y2="22">
+                                <stop offset="0%" stop-color="#667eea" />
+                                <stop offset="100%" stop-color="#764ba2" />
+                            </linearGradient>
+                            <linearGradient id="g2" x1="6" y1="6" x2="18" y2="18">
+                                <stop offset="0%" stop-color="#f093fb" />
+                                <stop offset="100%" stop-color="#f5576c" />
+                            </linearGradient>
+                            <linearGradient id="g3" x1="9" y1="9" x2="15" y2="15">
+                                <stop offset="0%" stop-color="#4facfe" />
+                                <stop offset="100%" stop-color="#00f2fe" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h1>Radio Admin Panel</h1>
+                <p>Sign in to manage your radio channels</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="input-group"><label for="email">Email</label><input type="email" id="email"
+                        placeholder="admin@example.com" required></div>
+                <div class="input-group"><label for="password">Password</label><input type="password" id="password"
+                        placeholder="••••••••" required></div>
+                <button type="submit" class="btn-primary" id="loginBtn"><span class="btn-text">Sign In</span><span
+                        class="btn-loader"></span></button>
+                <div id="loginError" class="error-message"></div>
+            </form>
+        </div>
+        <div class="login-background">
+            <div class="gradient-orb orb-1"></div>
+            <div class="gradient-orb orb-2"></div>
+            <div class="gradient-orb orb-3"></div>
+        </div>
+    </div>
+    <div id="adminDashboard" class="admin-dashboard hidden">
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <svg class="header-logo" viewBox="0 0 24 24" fill="none">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z"
+                            fill="url(#hg)" />
+                        <circle cx="12" cy="12" r="4" fill="white" />
+                        <defs>
+                            <linearGradient id="hg" x1="2" y1="2" x2="22" y2="22">
+                                <stop offset="0%" stop-color="#667eea" />
+                                <stop offset="100%" stop-color="#764ba2" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <h1>Radio Admin</h1>
+                </div>
+                <div class="header-right">
+                    <div class="user-info"><span id="userEmail" class="user-email"></span></div>
+                    <button id="logoutBtn" class="btn-secondary"><svg width="18" height="18" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>Logout</button>
+                </div>
+            </div>
+        </header>
+        <main class="dashboard-main">
+            <div class="container">
+                <div class="action-bar">
+                    <h2 class="page-title">Radio Channels</h2>
+                    <div style="display:flex;align-items:center;gap:0.75rem">
+                        <div id="failedStationsCounter" class="failed-counter hidden">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <span id="failedCount">0</span> Failed
+                        </div>
+                        <button id="addChannelBtn" class="btn-primary"><svg width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4" />
+                            </svg>Add Channel</button>
+                    </div>
+                </div>
+                <div class="search-container">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor">
+                        <circle cx="11" cy="11" r="8" stroke-width="2" />
+                        <path d="M21 21l-4.35-4.35" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search channels...">
+                    <button id="clearSearch" class="clear-search hidden"><svg width="16" height="16" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg></button>
+                </div>
+                <div class="category-tabs" id="categoryTabs">
+                    <button class="tab-btn active" data-category="all">All Channels <span class="tab-count"
+                            id="count-all">0</span></button>
+                </div>
+                <div class="channels-grid" id="channelsGrid"></div>
+                <div id="emptyState" class="empty-state hidden">
+                    <svg class="empty-icon" viewBox="0 0 24 24" fill="none">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z"
+                            stroke="currentColor" stroke-width="2" />
+                        <path d="M12 8V12M12 16H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    <h3>No channels found</h3>
+                    <p>Get started by adding your first radio channel</p>
+                    <button class="btn-primary" onclick="document.getElementById('addChannelBtn').click()">Add Your
+                        First Channel</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="channelModal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Channel</h2>
+                <button class="modal-close" id="closeModal"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg></button>
+            </div>
+            <form id="channelForm" class="channel-form">
+                <div class="form-grid">
+                    <div class="input-group"><label for="channelTitle">Channel Title *</label><input type="text"
+                            id="channelTitle" placeholder="e.g., Classic Rock FM" required></div>
+                    <div class="input-group"><label for="channelCategory">Category *</label><input type="text"
+                            id="channelCategory" placeholder="e.g., Rock, Pop, Jazz" required></div>
+                    <div class="input-group full-width"><label for="channelUrl">Stream URL *</label><input type="url"
+                            id="channelUrl" placeholder="https://stream.example.com/radio" required></div>
+                    <div class="input-group full-width"><label for="channelimgurl">Image URL *</label><input type="url"
+                            id="channelimgurl" placeholder="https://example.com/image.jpg" required></div>
+                    <div class="input-group full-width"><label for="channelGenre">Genre</label><input type="text"
+                            id="channelGenre" placeholder="e.g., Classic Rock, Alternative"></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn-primary" id="saveChannelBtn"><span class="btn-text">Save
+                            Channel</span><span class="btn-loader"></span></button>
+                </div>
+                <div id="formError" class="error-message"></div>
+            </form>
+        </div>
+    </div>
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
